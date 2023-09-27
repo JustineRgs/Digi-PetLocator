@@ -1,20 +1,21 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-list class="list">
+    <ion-item class="item" *ngFor="let pet of pets">
+      <ion-card>
+        <div class="card-content">
+          <img [src]="pet.photoUrl" alt="{{ pet.name }} Photo">
+          <div class="card-details">
+            <ion-card-header>
+              <ion-card-title>{{ pet.name }}</ion-card-title>
+              <ion-card-subtitle>{{ getStatusLabel(pet.status) }} le {{ pet.date }} à {{ pet.location
+                }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              Here's a small text description for the card content. Nothing more, nothing less.
+            </ion-card-content>
+          </div>
+        </div>
+      </ion-card>
+    </ion-item>
+  </ion-list>
 </ion-content>

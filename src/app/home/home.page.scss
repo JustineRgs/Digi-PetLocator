@@ -25,3 +25,15 @@
 #container a {
   text-decoration: none;
 }
+
+.card-content {
+  display: flex;
+  align-items: center;
+}
+
+.card-content img {
+  margin: 10px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
