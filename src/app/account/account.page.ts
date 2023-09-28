@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { PetsService, Pet } from '../services/pets.service';
 import { FormsModule } from '@angular/forms';
-import { format } from 'date-fns';
+import { ToastController } from '@ionic/angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-account',
@@ -14,44 +15,92 @@ import { format } from 'date-fns';
 })
 export class AccountPage implements OnInit {
   newPet: Pet;
+  alerts: Pet[] = [];
+  addOrCancelText: string = 'Ajouter une annonce';
+  showForm: boolean = false;
 
-  constructor(private petService: PetsService) {
-    const currentDate = new Date();
+  constructor(
+    private petService: PetsService,
+    private toastController: ToastController
+  ) {
     this.newPet = {
       id: this.petService.getMaxId(),
       name: '',
       date: new Date(),
-      type: '',
+      type: 'Chien',
       latitude: '',
       longitude: '',
       status: 'lost',
-      sexe: '',
+      sexe: 'Mâle',
       race: '',
       phoneNumber: '',
-      photoUrl: '',
       informations: '',
+      photoUrl: '',
     };
   }
 
   ngOnInit() {
-    // Vous pouvez supprimer cette ligne car la création est déjà faite dans le constructeur
     this.newPet = {
       id: this.petService.getMaxId(),
       name: '',
       date: new Date(),
-      type: '',
+      type: 'Chien',
       latitude: '',
       longitude: '',
       status: 'lost',
-      sexe: '',
+      sexe: 'Mâle',
       race: '',
       phoneNumber: '',
       photoUrl: '',
       informations: '',
     };
+    this.alerts;
   }
 
-  handleCreate() {
-    this.petService.create(this.newPet);
+  async presentAlert(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+    });
+    await toast.present();
+  }
+
+  async activateLocation() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    this.newPet.latitude = coordinates.coords.latitude.toString();
+    this.newPet.longitude = coordinates.coords.longitude.toString();
+  }
+
+  async handleCreate() {
+    if (!this.newPet.name || !this.newPet.latitude || !this.newPet.longitude) {
+      this.presentAlert('Veuillez remplir tous les champs obligatoires.');
+    } else {
+      this.newPet.date = new Date(this.newPet.date);
+      this.petService.create(this.newPet);
+      this.alerts.push(this.newPet);
+      this.presentAlert('Alerte créée avec succès.');
+      this.newPet = {
+        id: this.petService.getMaxId(),
+        name: '',
+        date: new Date(),
+        type: 'Chien',
+        latitude: '',
+        longitude: '',
+        status: 'lost',
+        sexe: 'Mâle',
+        race: '',
+        phoneNumber: '',
+        informations: '',
+        photoUrl: '',
+      };
+      this.showForm = false;
+      this.addOrCancelText = this.showForm ? 'Annuler' : 'Ajouter une annonce';
+    }
+  }
+
+  async handleForm() {
+    this.showForm = !this.showForm;
+    this.addOrCancelText = this.showForm ? 'Annuler' : 'Ajouter une annonce';
   }
 }

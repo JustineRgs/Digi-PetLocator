@@ -1,9 +1,56 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Pouet</ion-title>
+    <img src="../../assets/images/petlocatorlogo.png" alt="logo">
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <capacitor-google-map #map></capacitor-google-map>
-  <ion-button (click)="activateLocation()">Activer la localisation</ion-button>
+
+<ion-content [fullscreen]="true" scrollY="false">
+  <ion-segment [(ngModel)]="viewMode">
+    <ion-segment-button value="map" (click)="createMap()">
+      Carte
+    </ion-segment-button>
+    <ion-segment-button value="list">
+      Liste
+    </ion-segment-button>
+  </ion-segment>
+
+  <h1 class="title">Toutes les annonces</h1>
+
+  <ion-row class="ion-justify-content-center">
+    <ion-button class="ion-margin-top" color="success" (click)="activateLocation()">Voir les annonces à
+      proximité</ion-button>
+  </ion-row>
+
+  <!-- Vue Liste -->
+  <div *ngIf="viewMode === 'list'">
+  </div>
+
+  <!-- Vue Carte -->
+  <div *ngIf="viewMode === 'map'">
+    <div class="map-legend">
+      <div class="legend-item">
+        <img src="../../assets/markers/lost.png" alt="Lost Marker">
+        <span>Perdu</span>
+      </div>
+      <div class="legend-item">
+        <img src="../../assets/markers/find.png" alt="Find Marker">
+        <span>Trouvé</span>
+      </div>
+      <div class="legend-item">
+        <img src="../../assets/markers/hurt.png" alt="Find Marker">
+        <span>Bléssé</span>
+      </div>
+      <div class="legend-item">
+        <img src="../../assets/markers/deceased.png" alt="Find Marker">
+        <span>Décédé</span>
+      </div>
+      <div class="legend-item">
+        <img src="../../assets/markers/safe.png" alt="Find Marker">
+        <span>En sécurité</span>
+      </div>
+    </div>
+    <capacitor-google-map #map></capacitor-google-map>
+  </div>
+
+
 </ion-content>

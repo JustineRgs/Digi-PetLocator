@@ -82,6 +82,7 @@ export class PetsService {
   create(newPet: Pet) {
     this.pets.push(newPet);
   }
+
   getStatusLabel(status: string): string {
     switch (status) {
       case 'lost':

@@ -1,38 +1,85 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Ajouter un animal</ion-title>
+    <img src="../../assets/images/petlocatorlogo.png" alt="logo">
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <ion-list class="ion-text-center">
-    <ion-item>
-      <ion-label position="floating">Name</ion-label>
-      <ion-input [(ngModel)]="newPet.name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Date</ion-label>
-      <ion-datetime #dateInput display-format="DD/MM/YYYY" presentation="date" [preferWheel]="true"
-        [(ngModel)]="newPet.date"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Type</ion-label>
-      <ion-select [(ngModel)]="newPet.type">
-        <ion-select-option value="Chien">Chien</ion-select-option>
-        <ion-select-option value="Chat">Chat</ion-select-option>
-        <ion-select-option value="Autres">Autres</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label>Status</ion-label>
-      <ion-select #statusSelect name="status" [(ngModel)]="newPet.status">
-        <ion-select-option value="lost">Perdu</ion-select-option>
-        <ion-select-option value="find">Trouvé</ion-select-option>
-        <ion-select-option value="deceased">Trouvé décédé</ion-select-option>
-        <ion-select-option value="hurt">Trouvé blessé</ion-select-option>
-        <ion-select-option value="safe">A retrouvé sa famille ❤</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-button class="ion-margin-top" (click)="handleCreate()">CREATE THE pet</ion-button>
 
+<ion-content>
+  <h1 class="title">Vos annonces</h1>
+  <div *ngIf="alerts.length === 0">
+    <p class="subtitle">Vous n'avez pas encore d'annonce.</p>
+  </div>
+
+  <ion-list class="ion-text-center" *ngIf="alerts.length > 0">
+    <ion-item *ngFor="let alert of alerts">
+      <ion-label>{{ alert.name }}</ion-label>
+    </ion-item>
   </ion-list>
+  <ion-button color="danger" expand="block" (click)="handleForm()">
+    {{ addOrCancelText }}
+  </ion-button>
+  <div *ngIf="showForm" class="slide-in">
+    <ion-list class="form">
+      <ion-item>
+        <ion-label position="floating">Nom de l'animal*</ion-label>
+        <ion-input [(ngModel)]="newPet.name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Dernière apparition</ion-label>
+        <ion-input value="{{ newPet.date | date: 'dd.MM.yyyy' }}" id="date" class="ion-text-end"></ion-input>
+        <ion-popover trigger="date" size="cover">
+          <ng-template>
+            <ion-datetime presentation="date" [(ngModel)]="newPet.date"></ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Status*" label-placement="floating" [(ngModel)]="newPet.status">
+          <ion-select-option value="lost">Perdu</ion-select-option>
+          <ion-select-option value="find">Trouvé</ion-select-option>
+          <ion-select-option value="deceased">Trouvé décédé</ion-select-option>
+          <ion-select-option value="hurt">Trouvé bléssé</ion-select-option>
+          <ion-select-option value="safe">A retrouvé sa famille ❤</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Lieu de la dernière apparition</ion-label>
+        <ion-button (click)="activateLocation()">Me géolocaliser</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Sexe" label-placement="floating" [(ngModel)]="newPet.type">
+          <ion-select-option value="Chien">Chien</ion-select-option>
+          <ion-select-option value="Chat">Chat</ion-select-option>
+          <ion-select-option value="Autres">Autres</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Sexe" label-placement="floating" [(ngModel)]="newPet.sexe">
+          <ion-select-option value="Mâle">Mâle</ion-select-option>
+          <ion-select-option value="Femelle">Femelle</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Race</ion-label>
+        <ion-input [(ngModel)]="newPet.race"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Numéro de téléphone</ion-label>
+        <ion-input [(ngModel)]="newPet.phoneNumber"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Informations supplémentaires</ion-label>
+        <ion-input [(ngModel)]="newPet.informations"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Photo</ion-label>
+        <ion-input [(ngModel)]="newPet.photoUrl"></ion-input>
+      </ion-item>
+      <ion-row class="ion-justify-content-center">
+        <ion-button class="ion-margin-top" color="success" (click)="handleCreate()">Créer une annonce</ion-button>
+      </ion-row>
+    </ion-list>
+  </div>
 </ion-content>

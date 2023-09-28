@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Pet, PetsService } from '../services/pets.service';
-import { Geolocation } from '@capacitor/geolocation';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -13,16 +13,10 @@ import { Geolocation } from '@capacitor/geolocation';
 export class HomePage {
   pets: Pet[] = [];
 
-  constructor(private petsService: PetsService) {}
+  constructor(private petsService: PetsService, private router: Router) {}
 
   getStatusLabel(status: string): string {
     return this.petsService.getStatusLabel(status);
-  }
-
-  async activateLocation() {
-    const coordinates = await Geolocation.getCurrentPosition();
-    console.log('Latitude', coordinates.coords.latitude);
-    console.log('Longitude', coordinates.coords.longitude);
   }
 
   formatDateString(date: Date): string {
@@ -31,8 +25,14 @@ export class HomePage {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   }
-
+  showOnMap(pet: Pet) {
+    // Utilisez le Router pour naviguer vers la page /map avec les coordonnées de l'animal
+    this.router.navigate(['/map'], {
+      queryParams: { lat: pet.latitude, lng: pet.longitude },
+    });
+  }
   ngOnInit() {
     this.pets = this.petsService.getAll();
+    console.log(this.pets);
   }
 }

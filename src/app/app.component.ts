@@ -30,7 +30,7 @@ export class AppComponent {
       icon: 'navigate-circle-outline',
     },
     {
-      title: 'Compte',
+      title: 'Vos annonces',
       url: '/account',
       icon: 'people',
     },

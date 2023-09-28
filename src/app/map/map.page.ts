@@ -11,7 +11,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { GoogleMap, Marker } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
 import { Pet, PetsService } from '../services/pets.service';
-import { async } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -24,20 +24,29 @@ import { async } from 'rxjs';
 export class MapPage {
   @ViewChild('map') mapRef!: ElementRef;
   map!: GoogleMap;
-
+  viewMode: 'list' | 'map' = 'map';
   pets: Pet[] = [];
 
-  constructor(private petsService: PetsService) {}
+  constructor(
+    private petsService: PetsService,
+    private route: ActivatedRoute
+  ) {}
 
   ionViewDidEnter() {
-    this.createMap();
+    this.createMap().then(() => {
+      const queryParams = this.route.snapshot.queryParams;
+      const lat = parseFloat(queryParams['lat']);
+      const lng = parseFloat(queryParams['lng']);
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        this.zoomToLocation(lat, lng);
+      }
+    });
   }
 
   ngOnInit() {
     this.pets = this.petsService.getAll();
-    console.log(this.pets);
   }
-
   async createMap() {
     const mapOptions = {
       config: {
@@ -78,13 +87,9 @@ export class MapPage {
         marker.iconUrl = '../../assets/markers/hurt.png';
       }
       marker.iconAnchor = { x: 13, y: 32 };
-      console.log(
-        `Latitude: ${parseFloat(pet.latitude)}, Longitude: ${parseFloat(
-          pet.longitude
-        )}`
-      );
 
       await this.map.addMarker(marker);
+      return Promise.resolve();
     });
   }
 
@@ -97,10 +102,17 @@ export class MapPage {
 
       await this.map.setCamera({
         coordinate: { lat, lng },
-        zoom: 15,
+        zoom: 8,
       });
     } catch (error) {
       console.error("Erreur lors de l'obtention de la position", error);
     }
+  }
+
+  zoomToLocation(lat: number, lng: number) {
+    this.map.setCamera({
+      coordinate: { lat, lng },
+      zoom: 15,
+    });
   }
 }

@@ -4,10 +4,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <h1>Les dernières publications</h1>
-  <p>Pour voir les publications proche de chez vous, activez la localisation</p>
-  <ion-button (click)="activateLocation()">Activer la localisation</ion-button>
-
+  <h1 class="title">Les dernières publications</h1>
 
   <ion-list class="list">
     <ion-item class="item" *ngFor="let pet of pets">
@@ -23,11 +20,10 @@
             <ion-card-content>
               Here's a small text description for the card content. Nothing more, nothing less.
             </ion-card-content>
+            <ion-button (click)="showOnMap(pet)">Afficher sur la carte</ion-button>
           </div>
         </div>
       </ion-card>
     </ion-item>
   </ion-list>
-
-
 </ion-content>
