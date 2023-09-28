@@ -1,4 +1,14 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <img src="../../assets/images/petlocatorlogo.png" alt="logo">
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true">
+  <h1>Les dernières publications</h1>
+  <p>Pour voir les publications proche de chez vous, activez la localisation</p>
+  <ion-button (click)="activateLocation()">Activer la localisation</ion-button>
+
+
   <ion-list class="list">
     <ion-item class="item" *ngFor="let pet of pets">
       <ion-card>
@@ -18,4 +28,6 @@
       </ion-card>
     </ion-item>
   </ion-list>
+
+
 </ion-content>

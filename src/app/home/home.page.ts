@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Pet, PetsService } from '../services/pets.service';
-
+import { Geolocation } from '@capacitor/geolocation';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -19,10 +19,13 @@ export class HomePage {
     return this.petsService.getStatusLabel(status);
   }
 
+  async activateLocation() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log('Latitude', coordinates.coords.latitude);
+    console.log('Longitude', coordinates.coords.longitude);
+  }
+
   ngOnInit() {
     this.pets = this.petsService.getAll();
-    console.log('====================================');
-    console.log(this.pets);
-    console.log('====================================');
   }
 }
