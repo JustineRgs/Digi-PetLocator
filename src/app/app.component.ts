@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
@@ -14,7 +15,7 @@ export interface Page {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonicModule, RouterLink, CommonModule],
+  imports: [IonicModule, RouterLink, CommonModule, ReactiveFormsModule],
 })
 export class AppComponent {
   appPages: Page[] = [

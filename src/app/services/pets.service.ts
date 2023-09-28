@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 
 export interface Pet {
-  id: string;
+  id: number;
   name: string;
-  location: string;
-  date: string;
+  latitude: string;
+  longitude: string;
+  date: Date;
   type: string;
   status: 'lost' | 'find' | 'deceased' | 'hurt' | 'safe';
   sexe?: string;
@@ -20,47 +21,67 @@ export interface Pet {
 export class PetsService {
   private pets: Pet[] = [
     {
-      id: '1',
+      id: 1,
       name: 'Choupi',
       status: 'lost',
-      location: 'Paris',
+      latitude: '48.8566',
+      longitude: '2.3522',
       type: 'Chat',
-      date: '27/09/2023',
+      date: new Date(2023, 8, 27),
       photoUrl: '../../assets/images/1.jpg',
     },
     {
-      id: '2',
+      id: 2,
       name: 'Twister',
       status: 'find',
-      location: 'Montpellier',
+      latitude: '43.7102',
+      longitude: '7.2620',
       type: 'Chien',
-      date: '24/01/2023',
+      date: new Date(2023, 8, 27),
       photoUrl: '../../assets/images/3.jpg',
     },
     {
-      id: '3',
+      id: 3,
       name: 'Poupouille',
       status: 'safe',
-      location: 'Béziers',
+      latitude: '45.75',
+      longitude: '4.85',
       type: 'Chien',
-      date: '26/07/2023',
+      date: new Date(2023, 8, 27),
       photoUrl: '../../assets/images/2.jpg',
     },
     {
-      id: '4',
+      id: 4,
       name: 'Petit Papa',
       status: 'deceased',
-      location: 'Montpellier',
+      latitude: '43.2965',
+      longitude: '5.3698',
       type: 'Autres',
-      date: '31/09/2022',
+      date: new Date(2023, 8, 27),
       photoUrl: '../../assets/images/4.jpg',
     },
   ];
+
+  private maxId: number | undefined;
+
+  constructor() {}
 
   getAll() {
     return this.pets;
   }
 
+  getMaxId() {
+    if (this.pets.length === 0) {
+      this.maxId = 1;
+    } else {
+      this.maxId = Math.max(...this.pets.map((idNumber) => idNumber.id));
+    }
+
+    return this.maxId + 1;
+  }
+  create(newPet: Pet) {
+    this.pets.push(newPet);
+  }
   getStatusLabel(status: string): string {
     switch (status) {
       case 'lost':
@@ -76,5 +97,13 @@ export class PetsService {
       default:
         return 'Aucun status';
     }
+  }
+
+  addPet(newPet: Pet) {
+    const newId = this.pets.length + 1;
+
+    newPet.id = newId;
+
+    this.pets.push(newPet);
   }
 }

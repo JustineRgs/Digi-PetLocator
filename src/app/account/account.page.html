@@ -1,13 +1,38 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>account</ion-title>
+    <ion-title>Ajouter un animal</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-content>
+  <ion-list class="ion-text-center">
+    <ion-item>
+      <ion-label position="floating">Name</ion-label>
+      <ion-input [(ngModel)]="newPet.name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Date</ion-label>
+      <ion-datetime #dateInput display-format="DD/MM/YYYY" presentation="date" [preferWheel]="true"
+        [(ngModel)]="newPet.date"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Type</ion-label>
+      <ion-select [(ngModel)]="newPet.type">
+        <ion-select-option value="Chien">Chien</ion-select-option>
+        <ion-select-option value="Chat">Chat</ion-select-option>
+        <ion-select-option value="Autres">Autres</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Status</ion-label>
+      <ion-select #statusSelect name="status" [(ngModel)]="newPet.status">
+        <ion-select-option value="lost">Perdu</ion-select-option>
+        <ion-select-option value="find">Trouvé</ion-select-option>
+        <ion-select-option value="deceased">Trouvé décédé</ion-select-option>
+        <ion-select-option value="hurt">Trouvé blessé</ion-select-option>
+        <ion-select-option value="safe">A retrouvé sa famille ❤</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button class="ion-margin-top" (click)="handleCreate()">CREATE THE pet</ion-button>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">account</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  </ion-list>
 </ion-content>

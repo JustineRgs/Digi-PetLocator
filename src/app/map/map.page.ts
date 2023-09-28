@@ -8,10 +8,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
-import { GoogleMap } from '@capacitor/google-maps';
+import { GoogleMap, Marker } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
-import { LatLng, LatLngBounds, LatLngBoundsLiteral } from 'leaflet';
-import { MapBoundsArgs } from '@capacitor/google-maps/dist/typings/implementation';
+import { Pet, PetsService } from '../services/pets.service';
+import { async } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -25,10 +25,17 @@ export class MapPage {
   @ViewChild('map') mapRef!: ElementRef;
   map!: GoogleMap;
 
-  constructor() {}
+  pets: Pet[] = [];
+
+  constructor(private petsService: PetsService) {}
 
   ionViewDidEnter() {
     this.createMap();
+  }
+
+  ngOnInit() {
+    this.pets = this.petsService.getAll();
+    console.log(this.pets);
   }
 
   async createMap() {
@@ -48,6 +55,36 @@ export class MapPage {
       element: this.mapRef.nativeElement,
       forceCreate: true,
       ...mapOptions,
+    });
+
+    this.pets.forEach(async (pet) => {
+      const marker: Marker = {
+        coordinate: {
+          lat: parseFloat(pet.latitude),
+          lng: parseFloat(pet.longitude),
+        },
+        title: pet.name,
+      };
+      // Personnalisez les marqueurs en fonction du statut de l'animal
+      if (pet.status === 'lost') {
+        marker.iconUrl = '../../assets/markers/lost.png';
+      } else if (pet.status === 'find') {
+        marker.iconUrl = '../../assets/markers/find.png';
+      } else if (pet.status === 'safe') {
+        marker.iconUrl = '../../assets/markers/safe.png';
+      } else if (pet.status === 'deceased') {
+        marker.iconUrl = '../../assets/markers/deceased.png';
+      } else if (pet.status === 'hurt') {
+        marker.iconUrl = '../../assets/markers/hurt.png';
+      }
+      marker.iconAnchor = { x: 13, y: 32 };
+      console.log(
+        `Latitude: ${parseFloat(pet.latitude)}, Longitude: ${parseFloat(
+          pet.longitude
+        )}`
+      );
+
+      await this.map.addMarker(marker);
     });
   }
 
