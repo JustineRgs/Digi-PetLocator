@@ -34,12 +34,12 @@ export class AppComponent {
       icon: 'people',
     },
   ];
-  currentPage: string = ''; // Pour suivre la page active
+  currentPage: string = '';
 
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.currentPage = event.url; // Mettre à jour la page active
+        this.currentPage = event.url;
       }
     });
   }
