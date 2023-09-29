@@ -121,6 +121,7 @@ export class AccountPage implements OnInit {
     this.addOrCancelText = this.showForm ? 'Annuler' : 'Ajouter une annonce';
   }
 
+  // Prise de photo ou upload
   async handlePhoto() {
     const image = await Camera.getPhoto({
       quality: 90,
@@ -131,11 +132,13 @@ export class AccountPage implements OnInit {
     this.imageUrl = image.webPath;
   }
 
+  // Activation de la localisation
   async activateLocation() {
     const coordinates = await Geolocation.getCurrentPosition();
     this.newPet.latitude = coordinates.coords.latitude.toString();
     this.newPet.longitude = coordinates.coords.longitude.toString();
 
+    // Récupération de l'adresse complète
     this.getAddressFromCoordinates(
       this.newPet.latitude,
       this.newPet.longitude
@@ -145,6 +148,7 @@ export class AccountPage implements OnInit {
     });
   }
 
+  // Récupération de l'adresse complète
   getAddressFromCoordinates(
     latitude: string,
     longitude: string
@@ -189,6 +193,16 @@ export class AccountPage implements OnInit {
     });
     actionSheet.present();
   }
+
+  async presentToast(pet: Pet) {
+    const toast = await this.toastController.create({
+      message: `${pet.name} a été supprimé.`,
+      position: 'top',
+      duration: 3000,
+    });
+    toast.present();
+  }
+
   async presentDeleteAlert(pet: Pet) {
     const alert = await this.alertController.create({
       header: 'Supprimer cet annonce ?',
@@ -207,18 +221,9 @@ export class AccountPage implements OnInit {
     });
     alert.present();
   }
-  async presentToast(pet: Pet) {
-    const toast = await this.toastController.create({
-      message: `${pet.name} a été supprimé.`,
-      position: 'top',
-      duration: 3000,
-    });
-    toast.present();
-  }
 
   deletePet(pet: Pet) {
     this.alerts = this.alerts.filter((s) => s.id !== pet.id);
-    console.log(pet.id);
     this.presentToast(pet);
   }
 }

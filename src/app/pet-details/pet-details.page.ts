@@ -22,17 +22,18 @@ export class PetDetailsPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Récupération de l'id dans l'url pour affichage de la fiche de l'animal
     this.activatedRoute.queryParams.subscribe((params) => {
-      const idString = params['id']; // Récupère l'ID sous forme de chaîne
+      const idString = params['id'];
       const id = Number(idString);
       this.pet = this.petsService.getPetById(id);
-      console.log(this.pet);
     });
   }
 
+  // Affichage de l'animal sur la carte
   showOnMap(pet: Pet) {
     this.router.navigate(['/map'], {
-      queryParams: { lat: pet.latitude, lng: pet.longitude, view: 'map' },
+      queryParams: { lat: pet.latitude, lng: pet.longitude },
     });
   }
 }

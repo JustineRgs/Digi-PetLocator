@@ -4,14 +4,12 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-
   <ion-card *ngIf="pet">
     <h1 class="title">{{ pet.status ? petsService.getStatusLabel(pet.status) : '' }}</h1>
     <img [src]="pet.photoUrl || '../../assets/images/Default.svg'" alt="{{ pet.name }} Photo">
     <ion-card-header>
       <ion-card-title>{{ pet.name }}</ion-card-title>
     </ion-card-header>
-
     <ion-card-content>
       <ion-card-subtitle color="success" style="font-weight: bold;">A propos de l'animal</ion-card-subtitle>
       <div>
@@ -41,7 +39,6 @@
       <div>
         <strong>Numéro de téléphone :</strong> {{ pet.phoneNumber ? pet.phoneNumber : 'Non renseigné' }}
       </div>
-
       <ion-row class="ion-justify-content-center" style="margin-top:10px">
         <ion-button color="success" (click)="showOnMap(pet)">Afficher sur la carte</ion-button>
       </ion-row>

@@ -14,6 +14,7 @@ import { Pet, PetsService } from '../services/pets.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 const mapsKey = 'AIzaSyDFLOS5QXRRor92xNwgqy5-aayAmWpno9Q';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.page.html',
@@ -34,12 +35,14 @@ export class MapPage implements OnDestroy {
     private router: Router
   ) {}
 
+  // Affichage de la map en fonction de la lattitude et longitude si présent dans l'url
   ionViewDidEnter() {
-    this.createMap().then(() => {
+    this.createMap(this.mapRef.nativeElement).then(() => {
       const queryParams = this.route.snapshot.queryParams;
       const lat = parseFloat(queryParams['lat']);
       const lng = parseFloat(queryParams['lng']);
 
+      // Si lattitude + longitude : zoom sur la carte du lieu en question
       if (!isNaN(lat) && !isNaN(lng)) {
         this.zoomToLocation(lat, lng);
       }
@@ -52,6 +55,7 @@ export class MapPage implements OnDestroy {
     }
   }
 
+  // Suppression de la map si changement d'url
   ngOnDestroy() {
     if (this.map) {
       this.map.destroy();
@@ -61,20 +65,19 @@ export class MapPage implements OnDestroy {
   ngOnInit() {
     this.pets = this.petsService.getAll();
 
-    // Ajoutez un gestionnaire d'événement pour l'événement NavigationEnd
+    // Revenir sur la vue map au changement d'URL pour le native element
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        // Lorsque la navigation est terminée, vérifiez l'URL actuelle
-        // et définissez le mode d'affichage en conséquence.
         const currentUrl = this.router.url;
         if (currentUrl === '/map') {
+          this.createMap(this.mapRef.nativeElement);
           this.viewMode = 'map';
         }
       }
     });
   }
 
-  async createMap() {
+  async createMap(ref?: any) {
     const mapOptions = {
       config: {
         center: {
@@ -88,7 +91,7 @@ export class MapPage implements OnDestroy {
     this.map = await GoogleMap.create({
       id: 'map',
       apiKey: mapsKey,
-      element: this.mapRef.nativeElement,
+      element: ref || this.mapRef.nativeElement,
       forceCreate: true,
       ...mapOptions,
     });
@@ -145,13 +148,15 @@ export class MapPage implements OnDestroy {
     });
   }
 
+  // Affichage de l'animal sur la map
   showOnMap(pet: Pet) {
+    this.viewMode = 'map';
     this.router.navigate(['/map'], {
       queryParams: { lat: pet.latitude, lng: pet.longitude },
     });
-    this.viewMode = 'map';
   }
 
+  // Redirection de la fiche de l'animal
   showPetDetails(pet: Pet) {
     this.router.navigate(['/pet-details'], {
       queryParams: {

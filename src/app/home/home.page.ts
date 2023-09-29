@@ -1,6 +1,6 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { Pet, PetsService } from '../services/pets.service';
 import { Router } from '@angular/router';
 @Component({
@@ -15,16 +15,19 @@ export class HomePage {
 
   constructor(public petsService: PetsService, private router: Router) {}
 
+  // Mise en forme du statut
   getStatusLabel(status: string): string {
     return this.petsService.getStatusLabel(status);
   }
 
+  // Affichage de l'animal sur la map
   showOnMap(pet: Pet) {
     this.router.navigate(['/map'], {
       queryParams: { lat: pet.latitude, lng: pet.longitude },
     });
   }
 
+  // Redirection de la fiche de l'animal
   showPetDetails(pet: Pet) {
     this.router.navigate(['/pet-details'], {
       queryParams: {

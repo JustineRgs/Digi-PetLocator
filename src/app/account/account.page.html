@@ -4,6 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- Liste des annonces -->
 <ion-content>
   <h1 class="title">Vos annonces</h1>
   <div *ngIf="alerts.length === 0">
@@ -21,10 +22,12 @@
     </ion-item-sliding>
   </ion-list>
 
+  <!-- Button add annonce / annuler -->
   <ion-button color="danger" expand="block" (click)="handleForm()">
     {{ addOrCancelText }}
   </ion-button>
 
+  <!-- Formulaire -->
   <div *ngIf="showForm" class="slide-in">
     <ion-list class="form">
       <ion-item>
@@ -77,7 +80,6 @@
         <ion-label position="floating">Race</ion-label>
         <ion-input [(ngModel)]="newPet.race"></ion-input>
       </ion-item>
-
       <ion-item>
         <ion-label position="floating">Numéro de téléphone</ion-label>
         <ion-input [(ngModel)]="newPet.phoneNumber"></ion-input>
@@ -86,7 +88,6 @@
         <ion-label position="floating">Informations supplémentaires</ion-label>
         <ion-input [(ngModel)]="newPet.informations"></ion-input>
       </ion-item>
-
       <ion-item>
         <ion-label position="fixed">Photo</ion-label>
         <ion-button (click)="handlePhoto()">Choisir une image</ion-button>
@@ -95,7 +96,6 @@
         <ion-input placeholder="Veuillez insérer une image" style="color:grey" [(ngModel)]="imageUrl"
           readonly></ion-input>
       </ion-item>
-
       <ion-row class="ion-justify-content-center">
         <ion-button class="ion-margin-top" color="success" (click)="handleCreate()">Créer une annonce</ion-button>
       </ion-row>
