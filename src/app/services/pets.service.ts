@@ -10,6 +10,7 @@ export interface Pet {
   status: 'lost' | 'find' | 'deceased' | 'hurt' | 'safe';
   sexe?: string;
   race?: string;
+  idUnique?: number;
   phoneNumber?: string;
   photoUrl?: string;
   informations?: string;
@@ -44,8 +45,8 @@ export class PetsService {
       id: 3,
       name: 'Poupouille',
       status: 'safe',
-      latitude: '45.75',
-      longitude: '4.85',
+      latitude: '43.5667',
+      longitude: '3.9',
       type: 'Chien',
       date: new Date(2023, 8, 27),
       photoUrl: '../../assets/images/2.jpg',
@@ -79,6 +80,7 @@ export class PetsService {
 
     return this.maxId + 1;
   }
+
   create(newPet: Pet) {
     this.pets.push(newPet);
   }
@@ -100,11 +102,15 @@ export class PetsService {
     }
   }
 
-  addPet(newPet: Pet) {
-    const newId = this.pets.length + 1;
+  getPetById(id: number): Pet | undefined {
+    const pet = this.pets.find((p) => p.id === id);
+    return pet;
+  }
 
-    newPet.id = newId;
-
-    this.pets.push(newPet);
+  formatDateString(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 }

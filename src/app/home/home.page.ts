@@ -13,26 +13,27 @@ import { Router } from '@angular/router';
 export class HomePage {
   pets: Pet[] = [];
 
-  constructor(private petsService: PetsService, private router: Router) {}
+  constructor(public petsService: PetsService, private router: Router) {}
 
   getStatusLabel(status: string): string {
     return this.petsService.getStatusLabel(status);
   }
 
-  formatDateString(date: Date): string {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
   showOnMap(pet: Pet) {
-    // Utilisez le Router pour naviguer vers la page /map avec les coordonnées de l'animal
     this.router.navigate(['/map'], {
       queryParams: { lat: pet.latitude, lng: pet.longitude },
     });
   }
+
+  showPetDetails(pet: Pet) {
+    this.router.navigate(['/pet-details'], {
+      queryParams: {
+        id: pet.id,
+      },
+    });
+  }
+
   ngOnInit() {
     this.pets = this.petsService.getAll();
-    console.log(this.pets);
   }
 }

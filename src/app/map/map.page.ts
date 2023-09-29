@@ -3,16 +3,17 @@ import {
   ViewChild,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
 import { GoogleMap, Marker } from '@capacitor/google-maps';
-import { environment } from 'src/environments/environment';
 import { Pet, PetsService } from '../services/pets.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
+const mapsKey = 'AIzaSyDFLOS5QXRRor92xNwgqy5-aayAmWpno9Q';
 @Component({
   selector: 'app-map',
   templateUrl: './map.page.html',
@@ -21,15 +22,16 @@ import { ActivatedRoute } from '@angular/router';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [IonicModule, CommonModule, FormsModule],
 })
-export class MapPage {
+export class MapPage implements OnDestroy {
   @ViewChild('map') mapRef!: ElementRef;
   map!: GoogleMap;
   viewMode: 'list' | 'map' = 'map';
   pets: Pet[] = [];
 
   constructor(
-    private petsService: PetsService,
-    private route: ActivatedRoute
+    public petsService: PetsService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ionViewDidEnter() {
@@ -42,6 +44,18 @@ export class MapPage {
         this.zoomToLocation(lat, lng);
       }
     });
+  }
+
+  ionViewWillLeave() {
+    if (this.map) {
+      this.map.destroy();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.destroy();
+    }
   }
 
   ngOnInit() {
@@ -60,7 +74,7 @@ export class MapPage {
 
     this.map = await GoogleMap.create({
       id: 'map',
-      apiKey: environment.mapsKey,
+      apiKey: mapsKey,
       element: this.mapRef.nativeElement,
       forceCreate: true,
       ...mapOptions,
@@ -74,7 +88,7 @@ export class MapPage {
         },
         title: pet.name,
       };
-      // Personnalisez les marqueurs en fonction du statut de l'animal
+
       if (pet.status === 'lost') {
         marker.iconUrl = '../../assets/markers/lost.png';
       } else if (pet.status === 'find') {
@@ -88,6 +102,8 @@ export class MapPage {
       }
       marker.iconAnchor = { x: 13, y: 32 };
 
+      this.map.setOnMarkerClickListener();
+
       await this.map.addMarker(marker);
       return Promise.resolve();
     });
@@ -95,8 +111,8 @@ export class MapPage {
 
   async activateLocation() {
     try {
+      await Geolocation.checkPermissions();
       const position = await Geolocation.getCurrentPosition();
-
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
 
@@ -113,6 +129,20 @@ export class MapPage {
     this.map.setCamera({
       coordinate: { lat, lng },
       zoom: 15,
+    });
+  }
+
+  showOnMap(pet: Pet) {
+    this.router.navigate(['/map'], {
+      queryParams: { lat: pet.latitude, lng: pet.longitude },
+    });
+  }
+
+  showPetDetails(pet: Pet) {
+    this.router.navigate(['/pet-details'], {
+      queryParams: {
+        id: pet.id,
+      },
     });
   }
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { AlertController, IonicModule } from '@ionic/angular';
 import { PetsService, Pet } from '../services/pets.service';
 import { FormsModule } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ToastController, ActionSheetController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-account',
@@ -14,6 +15,11 @@ import { Geolocation } from '@capacitor/geolocation';
   imports: [IonicModule, CommonModule, FormsModule],
 })
 export class AccountPage implements OnInit {
+  private actionSheetController: ActionSheetController = inject(
+    ActionSheetController
+  );
+  private alertController: AlertController = inject(AlertController);
+  pets!: Pet[];
   newPet: Pet;
   alerts: Pet[] = [];
   addOrCancelText: string = 'Ajouter une annonce';
@@ -50,11 +56,13 @@ export class AccountPage implements OnInit {
       status: 'lost',
       sexe: 'Mâle',
       race: '',
+      idUnique: 0,
       phoneNumber: '',
       photoUrl: '',
       informations: '',
     };
     this.alerts;
+    this.pets = this.petService.getAll();
   }
 
   async presentAlert(message: string) {
@@ -90,6 +98,7 @@ export class AccountPage implements OnInit {
         status: 'lost',
         sexe: 'Mâle',
         race: '',
+        idUnique: 0,
         phoneNumber: '',
         informations: '',
         photoUrl: '',
@@ -102,5 +111,71 @@ export class AccountPage implements OnInit {
   async handleForm() {
     this.showForm = !this.showForm;
     this.addOrCancelText = this.showForm ? 'Annuler' : 'Ajouter une annonce';
+  }
+
+  async handlePhoto() {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      resultType: CameraResultType.Uri,
+    });
+
+    this.newPet.photoUrl = image.webPath;
+    console.log(image.webPath);
+  }
+
+  async presentActionSheet(pet: Pet) {
+    const actionSheet = await this.actionSheetController.create({
+      header: `${pet.name}`,
+      buttons: [
+        {
+          text: 'Supprimer',
+          icon: 'trash',
+          role: 'destructive',
+          handler: () => {
+            this.presentDeleteAlert(pet);
+          },
+        },
+
+        {
+          text: 'Annuler',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {},
+        },
+      ],
+    });
+    actionSheet.present();
+  }
+  async presentDeleteAlert(pet: Pet) {
+    const alert = await this.alertController.create({
+      header: 'Supprimer cet annonce ?',
+      subHeader: `${pet.name}`,
+      message: 'Cette opération ne pourra être annulée.',
+      buttons: [
+        {
+          text: 'Supprimer',
+          handler: () => this.deletePet(pet),
+        },
+        {
+          text: 'Finalement, non!',
+          role: 'cancel',
+        },
+      ],
+    });
+    alert.present();
+  }
+  async presentToast(pet: Pet) {
+    const toast = await this.toastController.create({
+      message: `${pet.name} a été supprimé.`,
+      position: 'top',
+      duration: 3000,
+    });
+    toast.present();
+  }
+
+  deletePet(pet: Pet) {
+    this.alerts = this.alerts.filter((s) => s.id !== pet.id);
+    console.log(pet.id);
+    this.presentToast(pet);
   }
 }
