@@ -11,7 +11,7 @@ import { IonicModule } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
 import { GoogleMap, Marker } from '@capacitor/google-maps';
 import { Pet, PetsService } from '../services/pets.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 const mapsKey = 'AIzaSyDFLOS5QXRRor92xNwgqy5-aayAmWpno9Q';
 @Component({
@@ -60,7 +60,20 @@ export class MapPage implements OnDestroy {
 
   ngOnInit() {
     this.pets = this.petsService.getAll();
+
+    // Ajoutez un gestionnaire d'événement pour l'événement NavigationEnd
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Lorsque la navigation est terminée, vérifiez l'URL actuelle
+        // et définissez le mode d'affichage en conséquence.
+        const currentUrl = this.router.url;
+        if (currentUrl === '/map') {
+          this.viewMode = 'map';
+        }
+      }
+    });
   }
+
   async createMap() {
     const mapOptions = {
       config: {
@@ -136,6 +149,7 @@ export class MapPage implements OnDestroy {
     this.router.navigate(['/map'], {
       queryParams: { lat: pet.latitude, lng: pet.longitude },
     });
+    this.viewMode = 'map';
   }
 
   showPetDetails(pet: Pet) {

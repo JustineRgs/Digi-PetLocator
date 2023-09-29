@@ -32,6 +32,10 @@
         <ion-input [(ngModel)]="newPet.name"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label position="floating">Numéro d'identification</ion-label>
+        <ion-input [(ngModel)]="newPet.idUnique"></ion-input>
+      </ion-item>
+      <ion-item>
         <ion-label>Dernière apparition</ion-label>
         <ion-input value="{{ newPet.date | date: 'dd.MM.yyyy' }}" id="date" class="ion-text-end"></ion-input>
         <ion-popover trigger="date" size="cover">
@@ -52,6 +56,9 @@
       <ion-item>
         <ion-label>Lieu de la dernière apparition</ion-label>
         <ion-button (click)="activateLocation()">Me géolocaliser</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-input style="color:rgb(167, 167, 248)" [(ngModel)]="locationAddress" readonly></ion-input>
       </ion-item>
       <ion-item>
         <ion-select label="Type d'animal" label-placement="floating" [(ngModel)]="newPet.type">
@@ -83,6 +90,10 @@
       <ion-item>
         <ion-label position="fixed">Photo</ion-label>
         <ion-button (click)="handlePhoto()">Choisir une image</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-input placeholder="Veuillez insérer une image" style="color:grey" [(ngModel)]="imageUrl"
+          readonly></ion-input>
       </ion-item>
 
       <ion-row class="ion-justify-content-center">

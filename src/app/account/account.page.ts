@@ -6,6 +6,17 @@ import { FormsModule } from '@angular/forms';
 import { ToastController, ActionSheetController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraResultType } from '@capacitor/camera';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+
+interface GeocodeResponse {
+  status: string;
+  results: {
+    formatted_address: string;
+  }[];
+}
 
 @Component({
   selector: 'app-account',
@@ -22,12 +33,15 @@ export class AccountPage implements OnInit {
   pets!: Pet[];
   newPet: Pet;
   alerts: Pet[] = [];
-  addOrCancelText: string = 'Ajouter une annonce';
   showForm: boolean = false;
+  locationAddress: string = '';
+  imageUrl: string | undefined = undefined;
+  addOrCancelText: string = 'Ajouter une annonce';
 
   constructor(
     private petService: PetsService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private http: HttpClient
   ) {
     this.newPet = {
       id: this.petService.getMaxId(),
@@ -54,9 +68,9 @@ export class AccountPage implements OnInit {
       latitude: '',
       longitude: '',
       status: 'lost',
-      sexe: 'Mâle',
+      sexe: '',
       race: '',
-      idUnique: 0,
+      idUnique: undefined,
       phoneNumber: '',
       photoUrl: '',
       informations: '',
@@ -72,12 +86,6 @@ export class AccountPage implements OnInit {
       position: 'top',
     });
     await toast.present();
-  }
-
-  async activateLocation() {
-    const coordinates = await Geolocation.getCurrentPosition();
-    this.newPet.latitude = coordinates.coords.latitude.toString();
-    this.newPet.longitude = coordinates.coords.longitude.toString();
   }
 
   async handleCreate() {
@@ -120,7 +128,42 @@ export class AccountPage implements OnInit {
     });
 
     this.newPet.photoUrl = image.webPath;
-    console.log(image.webPath);
+    this.imageUrl = image.webPath;
+  }
+
+  async activateLocation() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    this.newPet.latitude = coordinates.coords.latitude.toString();
+    this.newPet.longitude = coordinates.coords.longitude.toString();
+
+    this.getAddressFromCoordinates(
+      this.newPet.latitude,
+      this.newPet.longitude
+    ).subscribe((address: string) => {
+      this.newPet.adress = address;
+      this.locationAddress = address;
+    });
+  }
+
+  getAddressFromCoordinates(
+    latitude: string,
+    longitude: string
+  ): Observable<string> {
+    const apiKey = 'AIzaSyDFLOS5QXRRor92xNwgqy5-aayAmWpno9Q';
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+
+    return this.http.get<GeocodeResponse>(apiUrl).pipe(
+      map((response) => {
+        if (response.status === 'OK' && response.results.length > 0) {
+          return response.results[0].formatted_address;
+        }
+        return 'Adresse introuvable';
+      }),
+      catchError((error) => {
+        console.error("Erreur lors de la récupération de l'adresse :", error);
+        return "Erreur lors de la récupération de l'adresse";
+      })
+    );
   }
 
   async presentActionSheet(pet: Pet) {
