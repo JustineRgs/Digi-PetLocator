@@ -1,3 +1,14 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
+  <ion-router-outlet></ion-router-outlet>
+
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button *ngFor="let page of appPages" [routerLink]="page.url"
+        [ngClass]="{ 'active-tab': currentPage === page.url }">
+        <ion-icon [name]="page.icon"></ion-icon>
+        <ion-label>{{ page.title }}</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-app>

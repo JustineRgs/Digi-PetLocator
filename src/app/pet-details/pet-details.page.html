@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <img src="../../assets/images/petlocatorlogo.png" alt="logo">
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+
+  <ion-card *ngIf="pet">
+    <h1 class="title">{{ pet.status ? petsService.getStatusLabel(pet.status) : '' }}</h1>
+    <img [src]="pet.photoUrl || '../../assets/images/Default.svg'" alt="{{ pet.name }} Photo">
+    <ion-card-header>
+      <ion-card-title>{{ pet.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-card-subtitle color="success" style="font-weight: bold;">A propos de l'animal</ion-card-subtitle>
+      <div>
+        <strong>Identification de l'animal :</strong> {{ pet.idUnique ? pet.idUnique : 'Non connu' }}
+      </div>
+      <div>
+        <strong>Date de la dernière apparition :</strong> {{ pet.date ? petsService.formatDateString(pet.date) : 'Non
+        connu' }}
+      </div>
+      <div>
+        <strong>Type d'animal :</strong> {{ pet.type ? pet.type : 'Non connu' }}
+      </div>
+      <div>
+        <strong>Race :</strong> {{ pet.race ? pet.race : 'Non connu' }}
+      </div>
+      <div>
+        <strong>Sexe :</strong> {{ pet.sexe ? pet.sexe : 'Non connu' }}
+      </div>
+      <div>
+        <strong>Informations supplémentaires :</strong> {{ pet.informations ? pet.informations : "Aucune" }}
+      </div>
+      <ion-card-subtitle color="success" style="font-weight: bold; margin-top: 10px">Qui contacter ?</ion-card-subtitle>
+      <div>
+        <strong>Numéro de téléphone :</strong> {{ pet.phoneNumber ? pet.phoneNumber : 'Non renseigné' }}
+      </div>
+
+      <ion-row class="ion-justify-content-center" style="margin-top:10px">
+        <ion-button color="success" (click)="showOnMap(pet)">Afficher sur la carte</ion-button>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

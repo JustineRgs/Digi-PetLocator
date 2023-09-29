@@ -1,6 +1,5 @@
 #container {
   text-align: center;
-
   position: absolute;
   left: 0;
   right: 0;
@@ -24,4 +23,31 @@
 
 #container a {
   text-decoration: none;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+}
+
+.card-content img {
+  margin: 10px;
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+}
+
+.title {
+  margin-left: 10px;
+  font-weight: bold;
+  color: orange;
+}
+
+.btn-navigate {
+  display: flex;
+  align-items: center;
+}
+
+.btn-navigate ion-icon {
+  font-size: 20px;
 }
