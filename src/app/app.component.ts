@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-
+import { HttpClientModule } from '@angular/common/http';
 export interface Page {
   title: string;
   url: string;
@@ -15,7 +15,13 @@ export interface Page {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonicModule, RouterLink, CommonModule, ReactiveFormsModule],
+  imports: [
+    IonicModule,
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+  ],
 })
 export class AppComponent {
   appPages: Page[] = [

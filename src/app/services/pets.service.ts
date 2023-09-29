@@ -11,6 +11,7 @@ export interface Pet {
   sexe?: string;
   race?: string;
   idUnique?: number;
+  adress?: string;
   phoneNumber?: string;
   photoUrl?: string;
   informations?: string;
