@@ -43,3 +43,9 @@ L'ajout d'une publication comprend les étapes suivantes :
 
 1. Possibilité de prendre une photo ou de sélectionner une photo depuis la galerie.
 2. Ajout et modification des données de l'animal, notamment l'ID, le nom, la dernière localisation, le sexe, le type, le téléphone, l'email et les informations supplémentaires.
+
+## Axe d'amélioration
+
+- Ajout de filtre par type d'animal, date de publication, rayon de proximité en vue liste
+- Affichage de la carte une fois sur vue liste (erreur dans la console, et vue bloquer sur liste)
+- Ajout d'aria label > je les ai enlevé car une fois mis, mes labels n'étaient plus visible.
